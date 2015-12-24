@@ -33,7 +33,7 @@
     });
 
     function formatItem(item) {
-        return item.Name + ': $' + item.Price;
+        return 'id: ' + item.Id + ' ' + item.Name + ': $' + item.Price;
     }
 
     function find() {
@@ -50,7 +50,6 @@
     function postItem() {
         var dataToBeSent = {
             "Category": "Groceries",
-            "Id": "4",
             "Name": "safdsTomato Soup",
             "Price": "12"
         }
