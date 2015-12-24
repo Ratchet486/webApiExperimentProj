@@ -40,14 +40,14 @@ namespace MvcWebApi
         }
     }
 
-    public class ObjectSet<T1>
+    public class ObjectSet<T>
     {
         private static object syncRoot = new Object();
-        private Dictionary<int, T1> objects;
+        private Dictionary<int, T> objects;
 
-        public ObjectSet() { objects = new Dictionary<int, T1>();}
+        public ObjectSet() { objects = new Dictionary<int, T>();}
 
-        public List<T1> Add(List<T1> itemList)
+        public List<T> Add(List<T> itemList)
         {
             foreach (var i in itemList)
             {
@@ -55,7 +55,7 @@ namespace MvcWebApi
             }
             return itemList;
         }
-        public T1 Add(T1 item)
+        public T Add(T item)
         {
             var key = item.GetHashCode();
 
@@ -64,7 +64,7 @@ namespace MvcWebApi
             return item;
         }
 
-        private void setIdFeild(T1 item, int id)
+        private void setIdFeild(T item, int id)
         {
             //Uses reflextion to try to find id feild than sets it to the key 
             var type = item.GetType();
@@ -72,28 +72,26 @@ namespace MvcWebApi
             var typeName = type.Name;
 
             var setMethod = type.GetMethod("set_Id") ?? type.GetMethod("set_" + typeName + "Id");
-            var getMethod = type.GetMethod("get_Id") ?? type.GetMethod("get_" + typeName + "Id");
+            //var getMethod = type.GetMethod("get_Id") ?? type.GetMethod("get_" + typeName + "Id");
 
             setMethod.Invoke(item, new object[] { id });
         }
 
-        public bool Delete(T1 item)
+        public bool Delete(int itemId)
         {
-            var key = item.GetHashCode();
-
-            if (objects.ContainsKey(key))
+            if (objects.ContainsKey(itemId))
                 lock (syncRoot)
                 {
-                    if (objects.ContainsKey(key))
+                    if (objects.ContainsKey(itemId))
                     {
-                        objects.Remove(key);
+                        objects.Remove(itemId);
                         return true;
                     }
                 }
             return false;
         }
 
-        public IEnumerable<T1> GetEnumerable()
+        public IEnumerable<T> GetEnumerable()
         {
             lock (syncRoot)
             {
@@ -101,7 +99,7 @@ namespace MvcWebApi
             }
         }
 
-        public T1 Find(int itemId)
+        public T Find(int itemId)
         {
             if (objects.Keys.Contains(itemId))
             {
@@ -113,7 +111,7 @@ namespace MvcWebApi
                     }
                 }
             }
-            return default(T1);
+            return default(T);
         }
 
 
